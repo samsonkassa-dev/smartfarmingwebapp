@@ -56,7 +56,7 @@ const userLogin = async (userCreds, role, res) => {
         email: user.email
       },
       SECRET,
-      { expiresIn: 3600 },
+      { expiresIn: "14d" },
       (err, token) => {
         if (err) {
           res.json({message: "Email password incorrect!"})

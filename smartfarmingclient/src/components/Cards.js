@@ -2,12 +2,13 @@ import React from 'react'
 import './Cards.css'
 import { WiThermometer, WiHumidity,WiRaindrops } from 'weather-icons-react';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { withRouter } from "react-router";
+import { useHistory } from "react-router";
 
 function Cards(props) {
+    const history = useHistory()
     return (
         <div className="wrapperr">
-            <div className="card__location">{props.location} <span className="morecss"><MoreHorizIcon/></span></div>
+            <div className="card__location">{props.location} <span className="morecss" onClick={() => history.push('/card')} ><MoreHorizIcon /></span></div>
             
             <div className="cards">
                 <div className="card">

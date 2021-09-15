@@ -24,11 +24,13 @@
 .apprbutton {
   border: none;
   background-color: #4bb543;
+  color: #fff;
 }
 
 .rejbutton {
   border: none;
   background-color: #fc100d;
+  color: #fff;
 }
 
 .cancelbutton {

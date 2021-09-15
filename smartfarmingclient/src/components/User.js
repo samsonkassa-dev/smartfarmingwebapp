@@ -7,6 +7,7 @@ import axios from "axios";
 
 function User() {
   const [image, setImage] = useState("");
+  const [temperature, setTemperature] = useState("");
 
   useLayoutEffect(() => {
     axios({
@@ -23,6 +24,19 @@ function User() {
       .catch((err) => console.log(err));
   }, []);
 
+  useLayoutEffect(() => {
+    axios({
+      url: "https://api.thingspeak.com/channels/1476026/feeds.json?api_key=Y86I2FMYYUQQ7O7Z&results=1",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res.data.feeds[0].field1);
+        setTemperature(res.data.feeds[0].field1)
+      })
+      .catch((err) => console.log(err));
+
+  }, [])
+
   return (
     <>
       <UserSidebar image={image} />
@@ -35,7 +49,7 @@ function User() {
         <br />
         <Cards
           location="Location 1"
-          temperature="57"
+          temperature={temperature}
           humidity="27"
           moisture="09"
         />

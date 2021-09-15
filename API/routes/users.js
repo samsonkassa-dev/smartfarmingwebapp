@@ -3,7 +3,6 @@ const User = require("../models/user.js");
 const { userRegister, userLogin, userAuth } = require("../utils/Auth");
 const multer = require("multer");
 const uuid = require("uuid").v4;
-const jwt = require('jsonwebtoken')
 const router = express.Router();
 const { Approved } = require("../templates/approval");
 const { Rejected } = require("../templates/rejection");

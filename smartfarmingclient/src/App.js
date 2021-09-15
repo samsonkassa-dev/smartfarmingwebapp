@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import UserManageAccount from "./components/UserManageAccount";
 import ApprovedDetail from "./components/ApprovedDetail";
 import RejectedDetail from "./components/RejectedDetail";
+import CardDetail from "./components/CardDetail";
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route path="/adminDash">
             <Admin />
+          </Route>
+          <Route path="/card">
+            <CardDetail />
           </Route>
           <Route path="/request">
             <Request />
@@ -58,8 +62,14 @@ function App() {
             path="/requestpage"
             render={(props) => <ActiveRequestPage {...props} />}
           />
-          <Route path="/approvedpage" render={(props) => <ApprovedDetail {...props}/>}/>
-          <Route path="/rejectedpage" render={(props) => <RejectedDetail {...props}/>}/>
+          <Route
+            path="/approvedpage"
+            render={(props) => <ApprovedDetail {...props} />}
+          />
+          <Route
+            path="/rejectedpage"
+            render={(props) => <RejectedDetail {...props} />}
+          />
           <Route path="/userDash">
             <User />
           </Route>

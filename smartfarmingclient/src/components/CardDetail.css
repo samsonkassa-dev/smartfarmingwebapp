@@ -1,0 +1,13 @@
+.graphs{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 40px;
+    
+}
+
+.charts{
+    margin-right: 30px;
+    text-align: center ;
+}
+
