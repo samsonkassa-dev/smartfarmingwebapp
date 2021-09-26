@@ -8,6 +8,7 @@ const userRoutes = require('./routes/users')
 const cors = require('cors')
 const passport = require('passport')
 const { DB, PORT } = require('./config');
+const channelRoute = require('./routes/channel');
 
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/requests', requestRoutes)
 app.use('/approved', approvedRoutes)
 app.use('/rejected', rejectedRoutes)
 app.use('/users', userRoutes)
+app.use('/channel',channelRoute)
 
 
 app.get('/', (req, res) => {

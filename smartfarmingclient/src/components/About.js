@@ -31,7 +31,7 @@ function About() {
           reduce labor and equipment maintenance costs.
         </div>
       </div>
-      <Footer />
+      <Footer sx={{ mt: 8, mb: 4 }}  />
     </div>
   );
 }

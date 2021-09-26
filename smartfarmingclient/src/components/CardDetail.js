@@ -9,6 +9,8 @@ import { WiThermometer, WiHumidity, WiRaindrops } from "weather-icons-react";
 function CardDetail(props) {
   const [image, setImage] = useState("");
   const [role, setRole] = useState("");
+  const [temperature, setTemperature] = useState("")
+  const [humidity, setHumidity] = useState("")
 
   useLayoutEffect(() => {
     axios({
@@ -26,6 +28,20 @@ function CardDetail(props) {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useLayoutEffect(() => {
+    axios({
+      url: "https://api.thingspeak.com/channels/1476026/feeds.json?api_key=Y86I2FMYYUQQ7O7Z&results=1",
+      method: "get",
+    })
+      .then((res) => {
+        console.log(res.data.feeds[0].field1);
+        setTemperature(res.data.feeds[0].field1)
+        setHumidity(res.data.feeds[0].field2)
+      })
+      .catch((err) => console.log(err));
+
+  }, [])
 
   return (
     <>
@@ -45,7 +61,7 @@ function CardDetail(props) {
               <WiThermometer size={35} color="#d00000" />
             </div>
             <div className="card__title">Temperature</div>
-            <div className="card__content">{props.temperature}</div>
+            <div className="card__content">{temperature}</div>
           </div>
           <div className="card">
             <div className="card__icon">
@@ -60,7 +76,7 @@ function CardDetail(props) {
               <WiHumidity size={35} color="#023e8a" />
             </div>
             <div className="card__title">Humidity</div>
-            <div className="card__content">{props.humidity}</div>
+            <div className="card__content">{humidity}</div>
           </div>
         </div>
         <div className="graphs">

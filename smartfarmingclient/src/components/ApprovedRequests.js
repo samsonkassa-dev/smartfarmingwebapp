@@ -112,7 +112,7 @@ class ApprovedRequests extends Component {
     } else {
       return (
         <>
-          <Sidebar image={this.state.image} />
+          <Sidebar>
           <div className="position">
             <div className="pagetitle">
               <h3>Approved Requests</h3>
@@ -153,6 +153,7 @@ class ApprovedRequests extends Component {
               </table>
             </div>
           </div>
+          </Sidebar>
         </>
       );
     }

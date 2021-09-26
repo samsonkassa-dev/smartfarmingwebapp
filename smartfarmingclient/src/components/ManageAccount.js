@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import "./ManageAccount.css";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
+import { TextField, Grid, Button, Input } from "@material-ui/core";
 import { toast } from "react-toastify";
 
 function ManageAccount() {
@@ -179,37 +180,51 @@ function ManageAccount() {
 
   return (
     <>
-      <Sidebar image={image.preview ? image.preview : image} />
-      <div className="position">
-        <div className="pagetitle">
-          <h3>Manage Accounts</h3>
-        </div>
-        <div className="avatarwrapper">
-          <div className="boxed">
-            <img
-              className="avatar"
-              src={image.preview ? image.preview : image}
-              alt="anime"
-            />
+      <Sidebar>
+          <div className="avatarwrapper">
+            <div className="boxed">
+              <img
+                className="avatar"
+                src={image.preview ? image.preview : image}
+                alt="anime"
+              />
+            </div>
+            <div>
+              <Input type='file' type="file"
+                name="image"
+                accept="image/*"
+                multiple={false}
+                onChange={handleImageFile.bind(this)}/>
+              {/* <input
+                type="file"
+                name="image"
+                accept="image/*"
+                multiple={false}
+                onChange={handleImageFile.bind(this)}
+              /> */}
+              <Button
+                className="propicbutton"
+                onClick={handleUpload.bind(this)}
+              >
+                Upload
+              </Button>
+            </div>
           </div>
-          <div>
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              multiple={false}
-              onChange={handleImageFile.bind(this)}
-            />
-            <button className="propicbutton" onClick={handleUpload.bind(this)}>
-              Upload
-            </button>
-          </div>
-        </div>
-        <hr />
-        <div className="wrapperelement">
-          <form className="editform">
-            <div className="group-control">
-              <label>Name </label>
+          <hr />
+
+          <form>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="Name"
+                  value={name}
+                  variant="outlined"
+                  onChange={handleNameChange}
+                  fullWidth
+                />
+                              </Grid>
+                {/* <label>Name </label>
               <div className="inputfield">
                 <input
                   ref={inputRef}
@@ -217,12 +232,17 @@ function ManageAccount() {
                   defaultValue={name}
                   onChange={handleNameChange}
                   className="inputf"
-                />
-                <button className="submitbutton" onClick={updateName.bind(this)}>Ok</button>
-              </div>
-            </div>
-            <div className="group-control">
-              <label>Phone number </label>
+                /> */}
+                <Grid xs={6}>
+                  <Button
+                    className="submitbutton"
+                    onClick={updateName.bind(this)}
+                  >
+                    Ok
+                  </Button>
+                </Grid>
+
+              {/* <label>Phone number </label>
               <div className="inputfield">
                 <input
                   ref={inputRef}
@@ -230,12 +250,27 @@ function ManageAccount() {
                   defaultValue={phoneno}
                   onChange={handlePhoneNoChange}
                   className="inputf"
+                /> */}
+              <Grid item xs={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="Phone Number"
+                  value={phoneno}
+                  variant="outlined"
+                  onChange={handlePhoneNoChange}
+                  fullWidth
                 />
-                <button className="submitbutton" onClick={updatePhoneNumber.bind(this)}>Ok</button>
-              </div>
-            </div>
-            <div className="group-control">
-              <label>Email </label>
+              </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    className="submitbutton"
+                    onClick={updatePhoneNumber.bind(this)}
+                  >
+                    Ok
+                  </Button>
+                </Grid>
+
+              {/* <label>Email </label>
               <div className="inputfield">
                 <input
                   ref={inputRef}
@@ -243,13 +278,29 @@ function ManageAccount() {
                   defaultValue={email}
                   onChange={handleEmailChange}
                   className="inputf"
+                /> */}
+              <Grid item xs={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="Email"
+                  value={email}
+                  variant="outlined"
+                  onChange={handleEmailChange}
+                  fullWidth
                 />
-                <button  className="submitbutton" onClick={updateEmail.bind(this)}>Ok</button>
-              </div>
-            </div>
+                </Grid>
+                <Grid xs={6}>
+                <Button
+                  className="submitbutton"
+                  onClick={updateEmail.bind(this)}
+                >
+                  Ok
+                </Button>
+              </Grid>
+            </Grid>
           </form>
-        </div>
-      </div>
+
+      </Sidebar>
     </>
   );
 }

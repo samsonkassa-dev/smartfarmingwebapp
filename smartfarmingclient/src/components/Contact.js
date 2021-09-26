@@ -19,7 +19,7 @@ function Contact() {
         <br />
         <div className="address">Email: smartfarmingco@gmail.com</div>
       </div>
-      <Footer />
+      <Footer sx={{ mt: 8, mb: 4 }} />
     </div>
   );
 }

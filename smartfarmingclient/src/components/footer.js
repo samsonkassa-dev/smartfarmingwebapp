@@ -1,14 +1,18 @@
 import React from "react";
 import "./footer.css";
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 
-function Footer() {
+function Footer(props) {
   return (
-    <div className="footertext">
-      <hr />
-      <div className="textfooter">
-        <p>Copyright @2021</p>
-      </div>
-    </div>
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="/">
+        Smart Farming
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
   );
 }
 

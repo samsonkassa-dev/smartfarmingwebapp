@@ -75,7 +75,7 @@ class RejectedRequests extends Component {
     } else {
       return (
         <>
-          <Sidebar image={this.state.image} />
+          <Sidebar>
           <div className="position">
             <div className="pagetitle">
               <h3>Rejected Requests</h3>
@@ -130,6 +130,7 @@ class RejectedRequests extends Component {
               </ul> */}
             </div>
           </div>
+          </Sidebar>
         </>
       );
     }

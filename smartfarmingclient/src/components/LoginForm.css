@@ -1,4 +1,4 @@
-.loginDiv {
+/* .loginDiv {
   background-color: #fff;
   border: 1px solid transparent;
   border-radius: 0.5rem;
@@ -7,11 +7,11 @@
   padding: 3rem 3rem;
   margin: 10vh auto;
   /* margin-top: 15vh; */
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-}
+  /* box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px; */
 
-.forgotstyle{
+
+/* .forgotstyle{
     color: #0a9396;
     font-size: 12px;
 }
@@ -35,8 +35,8 @@
   padding: 3px 0px 3px 3px;
   margin: 5px 1px 3px 0px;
   border: 1px solid #dddddd;
-}
-
+} */
+/* 
 .fieldcss:focus {
   width: 300px;
   height: 35px;
@@ -62,9 +62,9 @@
   background-color: #3e8914;
   color: #fff;
   padding: 5px 8px;
-}
+} */
 
-.button-primary {
+/* .button-primary {
   background-color: #3e8914;
   color: #fff;
   border: #3e8914;
@@ -75,4 +75,4 @@
 
 .button-primary:hover {
   background-color: #3e8914;
-}
+} */

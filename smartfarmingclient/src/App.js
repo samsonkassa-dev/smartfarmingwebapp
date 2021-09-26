@@ -55,9 +55,7 @@ function App() {
           <Route path="/account">
             <ManageAccount />
           </Route>
-          <Route path="/userAccount">
-            <UserManageAccount />
-          </Route>
+
           <Route
             path="/requestpage"
             render={(props) => <ActiveRequestPage {...props} />}

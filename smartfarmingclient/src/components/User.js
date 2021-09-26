@@ -4,6 +4,7 @@ import "./User.css";
 import SearchBar from "./SearchBar";
 import Cards from "./Cards";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 
 function User() {
   const [image, setImage] = useState("");
@@ -31,22 +32,14 @@ function User() {
     })
       .then((res) => {
         console.log(res.data.feeds[0].field1);
-        setTemperature(res.data.feeds[0].field1)
+        setTemperature(res.data.feeds[0].field1);
       })
       .catch((err) => console.log(err));
-
-  }, [])
+  }, []);
 
   return (
     <>
-      <UserSidebar image={image} />
-      <div className="position">
-        <div className="pagetitle">
-          <h3>Dashboard</h3>
-        </div>
-        <SearchBar />
-        <br />
-        <br />
+      <Sidebar>
         <Cards
           location="Location 1"
           temperature={temperature}
@@ -59,7 +52,7 @@ function User() {
           humidity="20"
           moisture="12"
         />
-      </div>
+      </Sidebar>
     </>
   );
 }

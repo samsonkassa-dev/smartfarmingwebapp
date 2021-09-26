@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, Component } from "react";
+import React, {  Component } from "react";
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import "./ActiveRequests.css";
@@ -217,7 +217,7 @@ class ActiveRequests extends Component {
     } else {
       return (
         <>
-          <Sidebar image={this.state.image} />
+          <Sidebar>
 
           <div className="position">
             <div className="pagetitle">
@@ -246,6 +246,7 @@ class ActiveRequests extends Component {
               </table>
             </div>
           </div>
+          </Sidebar>
         </>
       );
     }
