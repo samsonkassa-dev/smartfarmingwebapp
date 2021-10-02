@@ -1,59 +1,76 @@
 const mongoose = require("mongoose");
 
+var d= new Date();
+
 const fieldSchema = mongoose.Schema(
-    {
-        val:{
-            type:String
-        },
-        
-      
-        
+  {
+    val: {
+      type: String,
+
+      default: null,
     },
-        {
-            timestamps:true
-        }
-        
+
+    date: {
+      type: String,
+      default: d,
+    },
+    
+  },
   
-    
-)
+ 
+
+);
 const channelSchema = mongoose.Schema({
-    name:{
-        type:String,
-        default: null,
-        
+  name: {
+    require: true,
+    type: String,
+    default: null,
+  },
+  description: {
+    type: String,
+    default: null,
+  },
+  latitude: {
+    type: String,
+    default: null,
+  },
+  longitude: {
+    type: String,
+    default: null,
+  },
+  fieldname: [
+    {
+      type: String,
     },
-    description:{
-        type:String,
-        default: null,
-        
+  ],
+  field1: [fieldSchema],
+  field2: [fieldSchema],
+  field3: [fieldSchema],
+  field4: [
+    {
+      fieldSchema,
     },
-    latitude:{
-        type:String,
-        default: null,
-        
+  ],
+  field5: [
+    {
+      fieldSchema,
     },
-    longitude:{
-        type:String,
-        default: null,
-        
-    },
-    field1:[
-    
-        
-        fieldSchema
-        
-    ]
-},
-    
-
-
-)
-channelSchema.virtual('id').get(function(){
-    return this._id.toHexString();
+  ],
+  pumpcontroller: {
+    type: String,
+    default: 0,
+  },
+  fancontroller: {
+    type: String,
+    default: 0,
+  },
 });
-channelSchema.set('toJSON',{
-    virtuals: true
-})
+channelSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+channelSchema.set("toJSON", {
+  virtuals: true,
+});
 
-const Channel = mongoose.model("Channel",channelSchema);
+const Channel = mongoose.model("Channel", channelSchema);
 module.exports = Channel;

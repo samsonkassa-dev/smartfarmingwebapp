@@ -1,39 +1,13 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import "./Admin.css";
-import SearchBar from "./SearchBar";
+import AddIcon from '@mui/icons-material/Add';
 import Cards from "./Cards";
 import axios from "axios";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiDrawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./listItems";
-import Chart from "./Chart";
-import Avatar from "./Avatar";
+import {  createTheme } from "@mui/material/styles";
 import Popup from "./Popup";
-import { Button, makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Box } from "@material-ui/core";
 import NewChannelForm from "./NewChannelForm";
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker,
-} from "react-google-maps";
 
 // const MapWithAMarker = withScriptjs(withGoogleMap(props =>
 //   <GoogleMap
@@ -49,12 +23,35 @@ import {
 // import Iframe from "react-iframe";
 const mdTheme = createTheme();
 
+// function useInterval(callback, delay) {
+//   const savedCallback = useRef();
+
+//   // Remember the latest callback.
+//   useEffect(() => {
+//     savedCallback.current = callback;
+//   }, [callback]);
+
+//   // Set up the interval.
+//   useEffect(() => {
+//     function tick() {
+//       savedCallback.current();
+//     }
+//     if (delay !== null) {
+//       let id = setInterval(tick, delay);
+//       return () => clearInterval(id);
+//     }
+//   }, [delay]);
+// }
+
 function Admin() {
   const [image, setImage] = useState("");
   const [temperature, setTemperature] = useState("");
+  const [moisture, setMoisture] = useState("");
+  const [humidity, setHumidity] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
   const [name, setName] = useState("");
   const [channelData, setChannelData] = useState([]);
+  const [mock, setMock] = useState("");
 
   useLayoutEffect(() => {
     axios({
@@ -71,46 +68,81 @@ function Admin() {
       .catch((err) => console.log("Error " + err));
   }, []);
 
-  useLayoutEffect(() => {
-    axios({
-      url: "https://api.thingspeak.com/channels/1476026/feeds.json?api_key=Y86I2FMYYUQQ7O7Z&results=1",
-      method: "get",
-    })
-      .then((res) => {
-        console.log(res.data.feeds[0].field1);
-        setTemperature(res.data.feeds[0].field1);
-      })
-      .catch((err) => console.log(err));
+  // useLayoutEffect(() => {
+  //   axios({
+  //     url: "https://api.thingspeak.com/channels/1476026/feeds.json?api_key=Y86I2FMYYUQQ7O7Z&results=1",
+  //     method: "get",
+  //   })
+  //     .then((res) => {
+  //       console.log(res.data.feeds[0].field1);
+  //       setTemperature(res.data.feeds[0].field1);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
+
+  useEffect(() => {
+    const interval = setInterval(getChartData, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  useLayoutEffect(() => {
+  function getChartData(){
     axios({ url: "http://localhost:4000/channel", method: "get" }).then(
       (res) => {
+        console.log(res.data);
         setChannelData(res.data);
       }
     );
-  }, []);
+    // console.log("hello")
+  }
+
+  // useLayoutEffect(() => {
+  //   axios({ url: "http://localhost:4000/channel", method: "get" }).then(
+  //     (res) => {
+  //       console.log(res.data);
+  //       setChannelData(res.data);
+  //     }
+  //   );
+  // });
+    // .then(
+
+    //     // const interval = setInterval(() => {
+
+    //     // }, 1000);
+    //     // return () => clearInterval(interval);
+
+    //   })
 
   return (
     <>
       <Sidebar>
-
-        <Button color="primary" onClick={() => setOpenPopup(true)}>
-          Add new channel
-        </Button>
-        {channelData.map((items) => {
-          const field11 = items.field1;
-          const field1 = items.field1[field11.length - 1].val;
-          console.log(field1);
-          return (
-            <Cards
-              location={items.name}
-              temperature={field1}
-              humidity="27"
-              moisture="09"
-            />
-          );
-        })}
+        <Box
+          component="main"
+          sx={{
+            position: "relative",
+            top: "5rem",
+            alignItems: "center",
+          }}
+        >
+          <Button style={{backgroundColor: "green", color: "#fff", margin: "20px", marginLeft: "28px"}} onClick={() => setOpenPopup(true)}>
+           <AddIcon/> Add new channel
+          </Button>
+          {channelData.map((items) => {
+            const field11 = items.field1;
+            const field1 = items.field1[field11.length - 1].val;
+            const field2 = items.field2;
+            const field22 = items.field2[field2.length - 1].val;
+            const field3 = items.field3;
+            const field33 = items.field3[field3.length - 1].val;
+            return (
+              <Cards
+                location={items.name}
+                temperature={field1}
+                humidity={field33}
+                moisture={field22}
+              />
+            );
+          })}
+        </Box>
         <Popup
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}

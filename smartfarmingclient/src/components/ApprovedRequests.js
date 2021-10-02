@@ -96,7 +96,10 @@ class ApprovedRequests extends Component {
           });
           console.log(error);
         }
-      )
+      ).then(axios({url:"http://localhost:4000/users/send-revocation-mail", method: "post",  data:{
+        name: req.firstname,
+        recipient: req.email
+      }}))
       .then(axios.delete(`http://localhost:4000/users/${req._id}`))
       .then(axios.delete(`http://localhost:4000/approved/${req._id}`));
   };

@@ -5,6 +5,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  FormControl,
+  Grid,
+  Input,
+  TextareaAutosize,
+  TextField,
+  Box,
+  Button,
+} from "@material-ui/core";
 class Request extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +27,15 @@ class Request extends Component {
       message: props.message,
       idimg: "",
       loading: true,
+      error: false,
+      helpertext: "",
+      confirmpassword: "",
+      passhelpertext: "",
+      passerror: false,
+      fnameHelperText: "",
+      fnameError: false,
+      phoneHelperText: "",
+      phoneError: false
     };
 
     this.handleButtonClick = this.handleButtonClick.bind(this);
@@ -43,12 +61,15 @@ class Request extends Component {
     }).then(
       (response) => {
         toast.configure();
-        toast.success("Request sent!. We'll notify you after we review your application asap!", {
-          position: "top-center",
-          autoClose: 5000,
-          pauseOnHover: true,
-          hideProgressBar: true,
-        });
+        toast.success(
+          "Request sent!. We'll notify you after we review your application asap!",
+          {
+            position: "top-center",
+            autoClose: 5000,
+            pauseOnHover: true,
+            hideProgressBar: true,
+          }
+        );
         console.log(response);
       },
       (error) => {
@@ -65,10 +86,20 @@ class Request extends Component {
   }
 
   handleFirstNameChanged(event) {
+    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     var firstname = this.state.firstname;
     firstname = event.target.value;
-
-    this.setState({ firstname: firstname });
+    if (firstname !== "") {
+      this.setState({fnameHelperText: ""})
+      this.setState({fnameError: false})
+      this.setState({ firstname: firstname });
+    } else if (format.test(firstname)) {
+      this.setState({ fnameHelperText: "Invalid input" });
+      this.setState({ fnameError: true });
+    } else {
+      this.setState({fnameHelperText: "Please fill out this field"})
+      this.setState({fnameError: true})
+    }
   }
 
   handleLastNameChanged(event) {
@@ -81,8 +112,14 @@ class Request extends Component {
   handlePhoneNoChanged(event) {
     var phoneno = this.state.phoneno;
     phoneno = event.target.value;
-
-    this.setState({ phoneno: phoneno });
+    if(phoneno.length === 10){
+      this.setState({phoneHelperText: ""})
+      this.setState({phoneError: false})
+      this.setState({ phoneno: phoneno });
+    }else{
+      this.setState({phoneHelperText: "Phone number should be 10 characters"})
+      this.setState({phoneError: true})
+    }
   }
 
   handleInstNameChanged(event) {
@@ -95,8 +132,17 @@ class Request extends Component {
   handleEmailChanged(event) {
     var email = this.state.email;
     email = event.target.value;
-
-    this.setState({ email: email });
+    if (email.includes("@")) {
+      this.setState({ helpertext: "" });
+      this.setState({ error: false });
+      this.setState({ email: email });
+    } else if (email === "") {
+      this.setState({ helpertext: "This is a required field" });
+      this.setState({ error: true });
+    } else {
+      this.setState({ helpertext: "Please enter a valid email" });
+      this.setState({ error: true });
+    }
   }
 
   handlePasswordChanged(event) {
@@ -104,6 +150,20 @@ class Request extends Component {
     password = event.target.value;
 
     this.setState({ password: password });
+  }
+
+  handleConfirmPasswordChange(event) {
+    var cpass = this.state.confirmpassword;
+    cpass = event.target.value;
+    if (cpass === "") {
+      this.setState({ passhelpertext: "Please enter password" });
+      this.setState({ passerror: true });
+    } else if (cpass !== this.state.password) {
+      this.setState({ passhelpertext: "Password do not match" });
+      this.setState({ passerror: true });
+    } else {
+      this.setState({ confirmpassword: cpass });
+    }
   }
 
   handleMessageChanged(event) {
@@ -120,84 +180,130 @@ class Request extends Component {
       <div>
         <Navbar />
         <h3 className="reqtitle">Send us a request</h3>
-        <div className="wrapper">
-          <form
-            className="formdiv"
-            onSubmit={this.handleSubmit}
-            method="post"
-            encType="multipart/form-data"
-          >
-            <div className="formControl">
-              <input
-                type="text"
-                placeholder="First Name"
-                value={this.state.firstname || ""}
-                onChange={this.handleFirstNameChanged.bind(this)}
-                className="fieldcss2"
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={this.state.lastname || ""}
-                onChange={this.handleLastNameChanged.bind(this)}
-                className="fieldcss2"
-              />
-              <input
-                type="text"
-                placeholder="Phone Number"
-                value={this.state.phoneno || ""}
-                onChange={this.handlePhoneNoChanged.bind(this)}
-                className="fieldcss2"
-              />
-              <input
-                type="text"
-                placeholder="Institution Name"
-                value={this.state.instname || ""}
-                onChange={this.handleInstNameChanged.bind(this)}
-                className="fieldcss2"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={this.state.email || ""}
-                onChange={this.handleEmailChanged.bind(this)}
-                className="fieldcss2"
-              />
-            </div>
-
-            <div className="formControl2">
-              <input
-                type="password"
-                placeholder="Password"
-                value={this.state.password || ""}
-                onChange={this.handlePasswordChanged.bind(this)}
-                className="fieldcss2"
-              />
-              <input
-                type="password"
-                placeholder="Confirm password"
-                className="fieldcss2"
-              />
-              <textarea
-                placeholder="Describe your purpose"
-                value={this.state.message || ""}
-                onChange={this.handleMessageChanged.bind(this)}
-                className="fieldcss2"
-              />
-              <label>Upload a clear view of your ID</label>
-              <input
-              type="file"
-                name="image"
-                accept="image/*"
-                multiple={false}
-                onChange={this.handleFileChange.bind(this)}
-              />
-              <button className="reqbutton" type="submit">
-                Send
-              </button>
-            </div>
-          </form>
-        </div>
+        <form
+          onSubmit={this.handleSubmit.bind(this)}
+          encType="multipart/form-data"
+        >
+          <Grid container spacing={3}>
+            <Grid container item xs={12} spacing={3}>
+              <Grid item xs={6}>
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  label="First Name"
+                  helperText={this.state.fnameHelperText}
+                  error={this.state.fnameError}
+                  defaultValue={this.state.firstname || ""}
+                  onChange={this.handleFirstNameChanged.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  label="Last Name"
+                  fullWidth
+                  value={this.state.lastname || ""}
+                  onChange={this.handleLastNameChanged.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  label="Phone Number"
+                  fullWidth
+                  helperText={this.state.phoneHelperText}
+                  error={this.state.phoneError}
+                  defaultValue={this.state.phoneno || ""}
+                  onChange={this.handlePhoneNoChanged.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  label="Institution Name"
+                  fullWidth
+                  value={this.state.instname || ""}
+                  onChange={this.handleInstNameChanged.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  type="email"
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  helperText={this.state.helpertext}
+                  error={this.state.error}
+                  defaultValue={this.state.email || ""}
+                  onChange={this.handleEmailChanged.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  type="password"
+                  fullWidth
+                  label="Password"
+                  variant="outlined"
+                  value={this.state.password || ""}
+                  onChange={this.handlePasswordChanged.bind(this)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container item xs={12} spacing={3}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  type="password"
+                  label="Confirm password"
+                  variant="outlined"
+                  helperText={this.state.passhelpertext}
+                  error={this.state.passerror}
+                  defaultValue={this.state.confirmpassword || ""}
+                  onChange={this.handleConfirmPasswordChange.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  multiline
+                  fullWidth
+                  maxRows="5"
+                  label="Describe your purpose"
+                  variant="outlined"
+                  value={this.state.message || ""}
+                  onChange={this.handleMessageChanged.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <label>Upload a clear view of your ID</label>
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  multiple={false}
+                  onChange={this.handleFileChange.bind(this)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  style={{
+                    backgroundColor: "#3e8914",
+                    color: "#FFFFFF",
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+                  }}
+                  type="submit"
+                  onClick={this.handleButtonClick}
+                >
+                  Send
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </form>
       </div>
     );
   }

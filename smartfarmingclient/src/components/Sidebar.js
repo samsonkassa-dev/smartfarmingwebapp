@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import "./Sidebar.css";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,17 +10,13 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MainListItems from "./listItems";
-import Chart from "./Chart";
-import Avatar from "./Avatar";
-import Popup from "./Popup";
-import axios from "axios";
-import AppLogo from '../images/logo2.png'
-import { Button, makeStyles } from "@material-ui/core";
+import AppLogo from "../images/logo22.png";
+import {  makeStyles } from "@material-ui/core";
+import axios from 'axios'
+import Avatar from './Avatar'
 
 const drawerWidth = 240;
 
@@ -70,44 +66,32 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-const renderUserSwitch = () => {
+const renderSwitch = (param) => {
   switch (window.location.pathname) {
     case "/userDash":
       return "Dashboard";
-      break;
-    case "/userAccount":
-      return "Manage Account";
-      break;
-    default:
-      break;
-  }
-};
-
-const renderSwitch = () => {
-  switch (window.location.pathname) {
-    case "/userDash":
-      return "Dashboard";
-      break;
+    case "/card":
+      return `${param}`;
     case "/adminDash":
       return "Dashboard";
-      break;
     case "/active":
       return "Active Requests";
-      break;
     case "/rejected":
       return "Rejected Requests";
-      break;
     case "/approved":
       return "Approved Request";
-      break;
     case "/account":
       return "Manage Account";
-      break;
+    case "/requestpage":
+      return "Request Detail";
+    case "/rejectedpage":
+      return "Request Detail";
+    case "/approvedpage":
+      return "Request Detail";
     default:
       break;
   }
 };
-
 function Sidebar(props) {
   const useStyles = makeStyles(() => ({
     appBar: {
@@ -115,13 +99,27 @@ function Sidebar(props) {
     },
   }));
 
-
-  const classes = useStyles();
   const { children } = props;
   const [open, setOpen] = useState(true);
+  const [image, setImage] = useState("")
   const toggleDrawer = () => {
     setOpen(!open);
+    <Avatar />
   };
+
+  useEffect(()=> {
+    axios({
+      url: "http://localhost:4000/users/user",
+      method: "get",
+      headers: {
+        "x-access-token": localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        setImage(res.data.user.idimg);
+      })
+      .catch((err) => console.log(err));
+  },)
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -156,10 +154,10 @@ function Sidebar(props) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              {renderSwitch()}
+              {renderSwitch(props.name)}
             </Typography>
             <IconButton color="inherit">
-              <img src ={AppLogo} alt="alt" width="96" />
+              <img src={AppLogo} alt="alt" width="30" />
               {/* <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge> */}
@@ -179,110 +177,17 @@ function Sidebar(props) {
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
+          <div style={!open ? {display: 'none'} : {}}>
+          <Avatar avatarimg = {image}/>
+          </div>
           <Divider />
           <List>
             <MainListItems />
           </List>
         </Drawer>
-
-        {/* <div className="sidebar">
-      <Avatar imageAvatar={props.image} />
-      <hr className="linesep" />
-      <ul className="sidebarlist">
-        <li
-          className="row"
-          id={window.location.pathname === "/adminDash" ? "active" : ""}
-          onClick={() => {
-            window.location.pathname = "/adminDash";
-          }}
-        >
-          <div id="icon">
-            <DashboardIcon />
-          </div>
-          <div id="title">Dashboard</div>
-        </li>
-        <li
-          className="row"
-          id={window.location.pathname === "/account" ? "active" : ""}
-          onClick={() => {
-            window.location.pathname = "/account";
-          }}
-        >
-          <div id="icon">
-            <AccountBoxIcon />
-          </div>
-          <div id="title">Manage account</div>
-        </li>
-        <li
-          className="row"
-          id={window.location.pathname === "/active" ? "active" : ""}
-          onClick={() => {
-            window.location.pathname = "/active";
-          }}
-        >
-          <div id="icon">
-            <DashboardIcon />
-          </div>
-          <div id="title">Active requests</div>
-        </li>
-        <li
-          className="row"
-          id={window.location.pathname === "/approved" ? "active" : ""}
-          onClick={() => {
-            window.location.pathname = "/approved";
-          }}
-        >
-          <div id="icon">
-            <ThumbUpIcon />
-          </div>
-          <div id="title">Approved requests</div>
-        </li>
-        <li
-          className="row"
-          id={window.location.pathname === "/rejected" ? "active" : ""}
-          onClick={() => {
-            window.location.pathname = "/rejected";
-          }}
-        >
-          <div id="icon">
-            <ThumbDownIcon />
-          </div>
-          <div id="title">Rejected requests</div>
-        </li>
-        <li
-          className="row"
-          id={window.location.pathname === "/" ? "active" : ""}
-          onClick={logout}
-        >
-          <div id="icon">
-            <ExitToAppIcon />
-          </div>
-          <div id="title">Log out</div>
-        </li> */}
-        {/* {SidebarData.map((val, key) => {
-          return (
-            <li
-              key={key}
-              onClick={() => {
-                window.location.pathname = val.link;
-              }}
-              id={window.location.pathname === val.link ? "active" : ""}
-              className="row"
-            >
-              <div id="icon">{val.icon}</div>
-              <div id="title">{val.title}</div>
-            </li>
-          );
-        })} */}
-        {/* </ul>
-    </div> */}
         <Box
           component="main"
           sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === "light"
-                ? theme.palette.white
-                : theme.palette.grey[900],
             flexGrow: 1,
             height: "100vh",
             overflow: "auto",

@@ -38,22 +38,6 @@ router.get('/', async(req,res)=>{
     }
 })
 
-// router.get('/approved', async(req, res) => {
-//     try{
-        
-//         const reqs = await Request.findOne({status: "approved"})
-//         res.json(reqs)
-//     }catch(err){
-//         res.send("Error" + err)
-//     }
-// })
-
-// router.get('/rejected', async(req, res) => {
-//     try{
-//         const reqs = await Request.findOne({status: "rejected"})
-//         res.json(reqs)
-//     }catch(err) {throw err}
-// })
 
 
 router.post('/', upload.single('idimg') , async(req, res, next)=>{

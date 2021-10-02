@@ -47,7 +47,7 @@ function RejectedDetail(props) {
   };
   return (
     <>
-      <Sidebar image={image} />
+      <Sidebar >
       <div className="position">
         <div className="pagetitle">
           <h3>Rejected Request Detail</h3>
@@ -114,6 +114,7 @@ function RejectedDetail(props) {
           </button>
         </div>
       </div>
+      </Sidebar>
     </>
   );
 }

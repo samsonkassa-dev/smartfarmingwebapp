@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import "./ManageAccount.css";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-import { TextField, Grid, Button, Input } from "@material-ui/core";
+import { TextField, Grid, Button, Input, Box } from "@material-ui/core";
 import { toast } from "react-toastify";
 
 function ManageAccount() {
@@ -13,6 +13,12 @@ function ManageAccount() {
   const [phoneno, setPhoneno] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState({ preview: "", raw: "" });
+  const [phoneHelperText, setPhoneHelperText] = useState("");
+  const [nameHelperText, setNameHelperText] = useState("");
+  const [emailHelperText, setEmailHelperText] = useState("");
+  const [phoneError, setPhoneError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   useLayoutEffect(() => {
     axios({
@@ -167,7 +173,15 @@ function ManageAccount() {
   };
 
   const handleNameChange = (e) => {
-    setName(e.target.value);
+    var name = e.target.value;
+    if (name === "") {
+      setNameHelperText("Please enter a valid name");
+      setNameError(true);
+    } else {
+      setNameHelperText("");
+      setNameError(false);
+      setName(name);
+    }
   };
 
   const handlePhoneNoChange = (e) => {
@@ -181,41 +195,46 @@ function ManageAccount() {
   return (
     <>
       <Sidebar>
-          <div className="avatarwrapper">
-            <div className="boxed">
-              <img
-                className="avatar"
-                src={image.preview ? image.preview : image}
-                alt="anime"
-              />
-            </div>
-            <div>
-              <Input type='file' type="file"
-                name="image"
-                accept="image/*"
-                multiple={false}
-                onChange={handleImageFile.bind(this)}/>
-              {/* <input
+        <Box
+          component="main"
+          sx={{
+            position: "relative",
+            top: "5rem",
+            alignItems: "center",
+            width: "80%",
+          }}
+        >
+          <div className="boxed">
+            <img
+              className="avatar"
+              src={image.preview ? image.preview : image}
+              alt="anime"
+            />
+          </div>
+          <Box style={{width: "100%", textAlign: "center"}} >
+
+          <Input
+            type="file"
+            name="image"
+            accept="image/*"
+            multiple={false}
+            onChange={handleImageFile.bind(this)}
+          />
+          {/* <input
                 type="file"
                 name="image"
                 accept="image/*"
                 multiple={false}
                 onChange={handleImageFile.bind(this)}
               /> */}
-              <Button
-                className="propicbutton"
-                onClick={handleUpload.bind(this)}
-              >
-                Upload
-              </Button>
-            </div>
-          </div>
+          <Button style={{backgroundColor: "green", color: "#fff"}} onClick={handleUpload.bind(this)}>Upload</Button>
           <hr />
-
-          <form>
+              </Box>
+          <Box style={{ width: "100%", marginLeft: "50px" }}>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={7}>
                 <TextField
+                  margin="normal"
                   id="outlined-basic"
                   label="Name"
                   value={name}
@@ -223,8 +242,8 @@ function ManageAccount() {
                   onChange={handleNameChange}
                   fullWidth
                 />
-                              </Grid>
-                {/* <label>Name </label>
+              </Grid>
+              {/* <label>Name </label>
               <div className="inputfield">
                 <input
                   ref={inputRef}
@@ -233,25 +252,8 @@ function ManageAccount() {
                   onChange={handleNameChange}
                   className="inputf"
                 /> */}
-                <Grid xs={6}>
-                  <Button
-                    className="submitbutton"
-                    onClick={updateName.bind(this)}
-                  >
-                    Ok
-                  </Button>
-                </Grid>
-
-              {/* <label>Phone number </label>
-              <div className="inputfield">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  defaultValue={phoneno}
-                  onChange={handlePhoneNoChange}
-                  className="inputf"
-                /> */}
-              <Grid item xs={6}>
+              <Button onClick={updateName.bind(this)}>Ok</Button>
+              <Grid item xs={7}>
                 <TextField
                   id="outlined-basic"
                   label="Phone Number"
@@ -261,25 +263,8 @@ function ManageAccount() {
                   fullWidth
                 />
               </Grid>
-                <Grid item xs={6}>
-                  <Button
-                    className="submitbutton"
-                    onClick={updatePhoneNumber.bind(this)}
-                  >
-                    Ok
-                  </Button>
-                </Grid>
-
-              {/* <label>Email </label>
-              <div className="inputfield">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  defaultValue={email}
-                  onChange={handleEmailChange}
-                  className="inputf"
-                /> */}
-              <Grid item xs={6}>
+              <Button onClick={updatePhoneNumber.bind(this)}>Ok</Button>
+              <Grid item xs={7}>
                 <TextField
                   id="outlined-basic"
                   label="Email"
@@ -288,18 +273,13 @@ function ManageAccount() {
                   onChange={handleEmailChange}
                   fullWidth
                 />
-                </Grid>
-                <Grid xs={6}>
-                <Button
-                  className="submitbutton"
-                  onClick={updateEmail.bind(this)}
-                >
-                  Ok
-                </Button>
               </Grid>
+              <Button color="primary" onClick={updateEmail.bind(this)}>
+                Ok
+              </Button>
             </Grid>
-          </form>
-
+          </Box>
+        </Box>
       </Sidebar>
     </>
   );

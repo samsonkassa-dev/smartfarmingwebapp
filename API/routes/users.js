@@ -7,6 +7,7 @@ const router = express.Router();
 const { Approved } = require("../templates/approval");
 const { Rejected } = require("../templates/rejection");
 const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 const auth = require("../middlewares/passport");
 const {
   USERNAME,
@@ -14,7 +15,8 @@ const {
   CLIENTID,
   CLIENTSECRET,
   REFRESH,
-  SECRET
+  SECRET,
+  SGSECRET
 } = require("../config");
 
 const DIR = "./public/";
@@ -47,7 +49,7 @@ var upload = multer({
 
 router.get("/protected", auth, (req, res) => {
   res.status(200).json({
-    msg: "Authorized",
+    isLoggedIn: true,
   });
 });
 
@@ -61,15 +63,15 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/user", auth, async (req, res) => {
-  console.log("get user")
-  try{
-    const user = await User.findById(req.user.id)
-    if (!user){
-      return res.json({message: "user doesn't exist"})
+  console.log("get user");
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.json({ message: "user doesn't exist" });
     }
-    return res.json({user})
-  }catch(err){
-    console.log(err)
+    return res.json({ user });
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -142,11 +144,13 @@ router.patch("/updateemail/:id", async (req, res) => {
   }
 });
 
-
-router.get('/isUserAuth', auth, (req, res) => {
-  return res.json({isLoggedIn: true, email: req.user.email, role: req.user.role})
-})
-
+router.get("/isUserAuth", auth, (req, res) => {
+  return res.json({
+    isLoggedIn: true,
+    email: req.user.email,
+    role: req.user.role,
+  });
+});
 
 router.patch("/photo/:id", upload.single("idimg"), async (req, res, err) => {
   console.log("Inside photo update");
@@ -165,66 +169,154 @@ router.patch("/photo/:id", upload.single("idimg"), async (req, res, err) => {
   }
 });
 
-const getEmailData = (to, name, template) => {
-  let data = null;
+sgMail.setApiKey(SGSECRET);
+
+
+// const getEmailData = (to, name, template) => {
+//   let data = null;
+//   switch (template) {
+//     case "Approved":
+//       data = {
+//         from: "yusraa190@gmail.com",
+//         to,
+//         subject: `Request Approved!`,
+//         html: Approved(name),
+//       };
+//       break;
+//     case "Rejected":
+//       data = {
+//         from: "yusraa190@gmail.com",
+//         to,
+//         subject: `Dear ${name}`,
+//         html: Rejected(),
+//       };
+//       break;
+//     default:
+//       data;
+//   }
+//   return data;
+// };
+
+const emailData = (recipient, name, template) => {
+  let msg = null;
   switch (template) {
     case "Approved":
-      data = {
+      msg = {
         from: "yusraa190@gmail.com",
-        to,
-        subject: `Request Approved!`,
-        html: Approved(name),
+        to: recipient,
+        subject: "Request Approved",
+        text: "Your request has been approved. Please log in using the credentials you provided in your request.",
       };
       break;
     case "Rejected":
-      data = {
+      msg = {
         from: "yusraa190@gmail.com",
-        to,
+        to: recipient,
         subject: `Dear ${name}`,
-        html: Rejected(),
+        text: "Your request has been rejected due to inadequate information. Please send again."
       };
       break;
+      case "Revoke":
+        msg = {
+          from: "yusraa190@gmail.com",
+          to: recipient,
+          subject: `Dear ${name}`,
+          text: "Your request has been revoked due to inactivity"
+        }
     default:
-      data;
+      msg;
   }
-  return data;
-};
+  return msg;
+}
 
 const sendEmail = (to, uname, type) => {
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: USERNAME,
-      pass: PASSWORD,
-      clientId: CLIENTID,
-      clientSecret: CLIENTSECRET,
-      refreshToken: REFRESH,
-    },
-  });
-  const mail = getEmailData(to, uname, type);
-
-  transporter.sendMail(mail, function (err, data) {
-    if (err) {
-      console.log("Error " + err);
-    } else {
-      console.log("Email sent successfully");
-    }
-  });
+  msg = emailData(to, uname, type)
+  sgMail
+    .send(msg)
+    .then((msg) => console.log(msg))
+    .catch((err) => console.log(err));
 };
 
-
-router.post("/send-approval-mail", async (req, res) => {
-  console.log(req.body);
-  await sendEmail(req.body.email, req.body.name, "Approved")
+router.post("/send-rejection-mail", (req, res)=> {
+  const { recipient, name } = req.body;
+  sendEmail(recipient, name, "Rejected")
   res.send("Success");
 });
 
-router.post('/send-rejection-mail', async (req, res) => {
-  console.log(req.body);
-  await sendEmail(req.body.email, req.body.name, "Rejected")
+router.post("/send-approval-mail", (req, res) => {
+  const { recipient, name } = req.body;
+  sendEmail(recipient, name, "Approved")
   res.send("Success");
 });
+
+router.post("/send-revocation-mail", (req, res) => {
+  const { recipient, name } = req.body;
+  sendEmail(recipient, name, "Revoke")
+  res.send("Success");
+});
+
+
+
+// const sendEmail = (to, uname, type) => {
+//   let transport = nodemailer.createTransport({
+//     service: "Gmail",
+//     port: 465,
+//     auth: {
+//       type: "OAuth2",
+//       user: USERNAME,
+//       pass: PASSWORD,
+//       clientId: CLIENTID,
+//       clientSecret: CLIENTSECRET,
+//       refreshToken: REFRESH,
+//     },
+//   });
+//   const mail = getEmailData(to, uname, type);
+
+//   transport.sendMail(mail, function (err) {
+//     if (err) {
+//       console.log("Error ", err);
+//     } else {
+//       console.log("Email sent");
+//     }
+//   });
+
+//   transport.close();
+// };
+
+// const sendEmail = (to, uname, type) => {
+//   let transporter = nodemailer.createTransport({
+//     secure: true,
+//     auth: {
+//       type: "OAuth2",
+//       user: USERNAME,
+//       pass: PASSWORD,
+//       clientId: CLIENTID,
+//       clientSecret: CLIENTSECRET,
+//       refreshToken: REFRESH,
+//     },
+//   });
+//   const mail = getEmailData(to, uname, type);
+
+//   transporter.sendMail(mail, function (err, data) {
+//     if (err) {
+//       console.log("Error " + err);
+//     } else {
+//       console.log("Email sent successfully");
+//     }
+//   });
+// };
+
+// router.post("/send-approval-mail", (req, res) => {
+//   console.log(req.body);
+//   sendEmail(req.body.email, req.body.name, "Approved");
+//   res.send("Success");
+// });
+
+// router.post("/send-rejection-mail", (req, res) => {
+//   console.log(req.body);
+//   sendEmail(req.body.email, req.body.name, "Rejected");
+//   res.send("Success");
+// });
 
 router.delete("/:id", async (req, res) => {
   console.log("Inside user deletion method");

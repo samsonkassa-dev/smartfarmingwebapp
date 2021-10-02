@@ -7,9 +7,9 @@ import TextField from "@mui/material/TextField";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Footer from "./footer";
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Container from "@mui/material/Container";
-import Grid from '@mui/material/Grid';
+import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core";
@@ -18,6 +18,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [helperText, setHelperText] = useState("");
+  const [passwordHelpT, setPasswordHelpT] = useState("");
+  const [error, setError] = useState(false);
+  const [passError, setPassError] = useState(false);
   const history = useHistory();
 
   async function login(event) {
@@ -29,7 +33,6 @@ function LoginForm() {
 
     console.log("Inside log in");
     const url = "http://localhost:4000/users/login";
-    try {
       await axios({
         url: url,
         method: "post",
@@ -45,17 +48,14 @@ function LoginForm() {
             ? history.push("/adminDash")
             : history.push("/userDash");
         })
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-      toast.configure();
-      toast.error("Username/password incorrect!", {
-        position: "top-center",
-        autoClose: 5000,
-        pauseOnHover: true,
-        hideProgressBar: true,
-      });
-    }
+        .catch((err) => { console.log(err);
+          toast.configure();
+          toast.error("Username/password incorrect!", {
+            position: "top-center",
+            autoClose: 5000,
+            pauseOnHover: true,
+            hideProgressBar: true,
+          });});
   }
 
   const styles = makeStyles((theme) => ({
@@ -70,6 +70,34 @@ function LoginForm() {
       },
     },
   }));
+
+  const onEmailChange = (e) => {
+    var input = e.target.value;
+    if (input.includes("@")) {
+      setHelperText("");
+      setError(false);
+      setEmail(e.target.value);
+    } else if( input===""){
+      setHelperText("This is a required field");
+      setError(true);
+    }
+    else {
+      setHelperText("Please enter a valid email");
+      setError(true);
+    }
+  };
+
+  const onPasswordChange = (e) => {
+    if (e.target.value.length >= 6) {
+      setPasswordHelpT("");
+      setPassError(false);
+      setPassword(e.target.value);
+    } else {
+      setPasswordHelpT("Password must be at least 6 characters");
+      setPassError(true);
+    }
+  };
+
   const theme = createTheme();
 
   const classes = styles();
@@ -88,49 +116,47 @@ function LoginForm() {
         >
           <LockOutlinedIcon />
           <Box component="form" onSubmit={login} noValidate sx={{ mt: 1 }}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  onChange={(e) => {
-                    console.log(e.target.value);
-                    setEmail(e.target.value);
-                  }}
-                  autoFocus
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={(e) => {
-                    console.log(e.target.value);
-                    setPassword(e.target.value);
-                  }}
-                />
-                {/* <div className="forgotstyle">Forgot password?</div> */}
-                <br />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  style={{ backgroundColor: "#3e8914", color: "#FFFFFF" }}
-                  sx={{ mt: 3, mb: 2 }}
-                  onClick={login}
-                >
-                  Sign In
-                </Button>
-                <br />
-                <br />
-                <Grid container>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              helperText={helperText}
+              error={error}
+              onChange={onEmailChange}
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              helperText={passwordHelpT}
+              error={passError}
+              autoComplete="current-password"
+              onChange={onPasswordChange}
+            />
+            {/* <div className="forgotstyle">Forgot password?</div> */}
+            <br />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              style={{ backgroundColor: "#3e8914", color: "#FFFFFF" }}
+              sx={{ mt: 3, mb: 2 }}
+              onClick={login}
+            >
+              Sign In
+            </Button>
+            <br />
+            <br />
+            <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
@@ -142,7 +168,7 @@ function LoginForm() {
                 </Link>
               </Grid>
             </Grid>
-                {/* <Link to="/request">
+            {/* <Link to="/request">
                   <Button
                     variant="outlined"
                     className={classes.tr}
@@ -151,8 +177,8 @@ function LoginForm() {
                     Request Data
                   </Button>
                 </Link> */}
-              </Box>
-          <Footer sx={{ mt: 8, mb: 4 }}  />
+          </Box>
+          <Footer sx={{ mt: 8, mb: 4 }} />
         </Box>
       </Container>
     </ThemeProvider>

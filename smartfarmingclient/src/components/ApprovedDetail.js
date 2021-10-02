@@ -73,6 +73,14 @@ function ApprovedDetail(props) {
           console.log(error);
         }
       )
+      .then(axios({
+        method: "post",
+        url: "http://localhost:4000/users/send-rejection-mail",
+        data:{
+          name: req.firstname,
+          email: req.email
+        }
+      }))
       .then(axios.delete(`http://localhost:4000/users/${req._id}`))
       .then(axios.delete(`http://localhost:4000/approved/${req._id}`));
   };
@@ -82,7 +90,7 @@ function ApprovedDetail(props) {
   };
   return (
     <>
-      <Sidebar image={image} />
+      <Sidebar>
       <div className="position">
         <div className="pagetitle">
           <h3>Approved Request Detail</h3>
@@ -146,6 +154,7 @@ function ApprovedDetail(props) {
           </button>
         </div>
       </div>
+      </Sidebar>
     </>
   );
 }

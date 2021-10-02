@@ -44,4 +44,7 @@ app.get('/', (req, res) => {
 
 
 
-app.listen(PORT)
+app.listen(PORT, '192.168.43.224',function(){
+    console.log("Connected")
+} )
+// app.listen(PORT)

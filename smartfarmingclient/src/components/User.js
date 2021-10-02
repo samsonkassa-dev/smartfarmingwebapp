@@ -1,14 +1,13 @@
-import React, { useLayoutEffect, useState } from "react";
-import UserSidebar from "./UserSidebar";
+import React, { useLayoutEffect, useEffect, useState } from "react";
 import "./User.css";
-import SearchBar from "./SearchBar";
 import Cards from "./Cards";
+import { Box } from "@material-ui/core";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 
 function User() {
   const [image, setImage] = useState("");
-  const [temperature, setTemperature] = useState("");
+  const [channelData, setChannelData] = useState([]);
 
   useLayoutEffect(() => {
     axios({
@@ -25,36 +24,54 @@ function User() {
       .catch((err) => console.log(err));
   }, []);
 
-  useLayoutEffect(() => {
-    axios({
-      url: "https://api.thingspeak.com/channels/1476026/feeds.json?api_key=Y86I2FMYYUQQ7O7Z&results=1",
-      method: "get",
-    })
-      .then((res) => {
-        console.log(res.data.feeds[0].field1);
-        setTemperature(res.data.feeds[0].field1);
-      })
-      .catch((err) => console.log(err));
+
+  useEffect(() => {
+    const interval = setInterval(getChartData, 5000);
+    return () => clearInterval(interval);
   }, []);
+
+  function getChartData(){
+    axios({ url: "http://localhost:4000/channel", method: "get" }).then(
+      (res) => {
+        console.log(res.data);
+        setChannelData(res.data);
+      }
+    );
+    // console.log("hello")
+  }
+
 
   return (
     <>
       <Sidebar>
-        <Cards
-          location="Location 1"
-          temperature={temperature}
-          humidity="27"
-          moisture="09"
-        />
-        <Cards
-          location="Location 2"
-          temperature="31.5"
-          humidity="20"
-          moisture="12"
-        />
-      </Sidebar>
+      <Box
+          component="main"
+          sx={{
+            position: "relative",
+            top: "5rem",
+          }}
+        >
+          
+          {channelData.map((items) => {
+            const field11 = items.field1;
+            const field1 = items.field1[field11.length - 1].val;
+            const field2 = items.field2;
+            const field22 = items.field2[field2.length - 1].val;
+            const field3 = items.field3;
+            const field33 = items.field3[field3.length - 1].val;
+            return (
+              <Cards
+                location={items.name}
+                temperature={field1}
+                humidity={field22}
+                moisture={field33}
+              />
+            );
+          })}
+        </Box>
+        </Sidebar>
     </>
   );
-}
+        }
 
-export default User;
+export default User

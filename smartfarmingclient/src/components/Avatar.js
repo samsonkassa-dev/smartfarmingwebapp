@@ -5,7 +5,7 @@ function Avatar(props) {
 
     return (
         <div className="boxedSidebar">
-            <img className="avatarSidebar" src={props.imageAvatar} alt="anime"/>
+            <img className="avatarSidebar" src={props.avatarimg} alt="anime"/>
         </div>
     )
 }

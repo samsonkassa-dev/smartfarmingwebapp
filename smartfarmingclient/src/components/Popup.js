@@ -23,7 +23,7 @@ export default function Popup(props) {
         <Typography style={{flexGrow: 1}}>
             {title}
             </Typography>
-        <Button style={{}} onClick={() => setOpenPopup(false)}><HighlightOffIcon/></Button>
+        <Button onClick={() => setOpenPopup(false)}><HighlightOffIcon/></Button>
         </div>
       </DialogTitle>
       <DialogContent>
